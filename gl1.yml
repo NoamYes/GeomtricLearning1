@@ -1,0 +1,4 @@
+name: gl1
+channels:
+  - defaults
+prefix: /home/nono/miniconda3/envs/gl1
