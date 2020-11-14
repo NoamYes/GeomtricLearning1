@@ -2,3 +2,4 @@
 __pycache__/
 off_files/example_off_files/
 
+.vscode/settings.json
