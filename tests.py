@@ -1,5 +1,6 @@
 from read_off import read_off 
 from write_off import write_off 
+import matplotlib.pyplot as plt
 from main import Mesh
 import numpy as np
 
@@ -11,8 +12,17 @@ vf_adj = sphere_mesh.vertex_face_adjacency()
 vv_adj = sphere_mesh.vertex_vertex_adjacency()
 v_deg = sphere_mesh.vertex_degree()
 # plotter = sphere_mesh.render_wireframe()
-colormap = np.linspace(0,256,162)
-plotter = sphere_mesh.render_pointcloud(colormap)
+boring_cmap = plt.cm.get_cmap("viridis", 162)
+
+# plotter = sphere_mesh.render_pointcloud(boring_cmap)
+# sphere_mesh.render_surface(boring_cmap)
+fn = sphere_mesh.face_normals(normalized=True)
+f_bc = sphere_mesh.face_barycenters()
+fa = sphere_mesh.face_areas()
+bc_areas = sphere_mesh.barycentric_vertex_areas()
+v_n = sphere_mesh.vertex_normals()
+
+
 print('end')
 
 
