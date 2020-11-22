@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Tests",
+            "name": "Python: Test Q1",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/tests.py",
+            "program": "${workspaceFolder}/Q1/tests.py",
             "console": "integratedTerminal"
         }
     ]
