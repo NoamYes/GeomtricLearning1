@@ -10,6 +10,21 @@
             "request": "launch",
             "program": "${workspaceFolder}/Q1/tests.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Test Q3",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/Q3/main.py",
+            "console": "integratedTerminal"
+        }
+        ,
+        {
+            "name": "Python: Test Q5",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/Q5/main.py",
+            "console": "integratedTerminal"
         }
     ]
 }
