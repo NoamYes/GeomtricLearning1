@@ -15,7 +15,7 @@ class Mesh:
     def vertex_face_adjacency(self):
         v_idx = 1+np.arange(len(self.v))
         adj = [np.isin(v_idx, f) for f in self.f]
-        self.vf_a = sparse.lil_matrix(adj).transpose()
+        self.vf_a = np.array(adj).transpose()
         return sparse.lil_matrix(adj).transpose()
 
     def vertex_vertex_adjacency(self):
@@ -98,8 +98,26 @@ class Mesh:
         self.v_n = vertex_normals
         return vertex_normals
 
+    def gaussian_curvature(self):
+        self.gauss_curv = np.zeros((self.v.shape[0],))
+        vf_a = self.vertex_face_adjacency()
+        v_areas = self.barycentric_vertex_areas()
+
+        for i in range (self.v.shape[0]):
+            f_inds = sparse.find(vf_a[i,:])[1]
+            v_inds = self.f[f_inds,  1:]
+            v_coords = self.v[v_inds[v_inds != i+1].reshape((-1,2)),:]
+            my_v = np.expand_dims(self.v[i+1], axis=2)
+            print('achieved')
+
+        
+
 def normalize_rows(arr):
     return [row/L2_norm(row) for row in arr]
 
 def L2_norm(arr):
     return np.sqrt((arr * arr).sum(axis=0))
+
+def compute_angle(vec1, vec2):
+    cos_ang = np.dot(vec1, vec2)/(np.linalg.norm(vec1)*np.linalg.norm(vec2))
+    return np.arccos(cos_ang)
