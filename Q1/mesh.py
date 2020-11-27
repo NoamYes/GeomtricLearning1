@@ -1,6 +1,8 @@
 import numpy as np
+from matplotlib.pyplot import cm
 import scipy.sparse as sparse
 import pyvista as pv
+from pyvista import examples
 from read_off import read_off 
 
 
@@ -8,8 +10,8 @@ from read_off import read_off
 class Mesh:
 
     def __init__(self, off_path):
-        self.v, self.f = read_off(off_path)
-        self.f = self.f[:,1:]
+        self.v, self.faces = read_off(off_path)
+        self.f = self.faces[:,1:]
         self.f_v_map = np.array([[self.v[v_idx] for v_idx in face] for face in self.f])
 
     
@@ -35,27 +37,29 @@ class Mesh:
     def vertex_degree(self):
         vv_a = self.vertex_vertex_adjacency()
         res = vv_a.sum(axis=0)
-        return res
+        return np.array(res)
 
     def render_wireframe(self):
+        surf = pv.PolyData(self.v, self.faces)
         plotter = pv.Plotter()
-        plotter.add_mesh(self.v, style='wireframe')
-        plotter.show()
+        plotter.add_mesh(surf, style='wireframe', color='blue')
+        plotter.show(auto_close=False)
         return plotter
 
-    def render_pointcloud(self, scalar_func):
+    def render_pointcloud(self, scalar_func, cmap_name=None):
         pointcloud = pv.PolyData(self.v)
         plotter = pv.Plotter()
-        plotter.add_mesh(pointcloud, render_points_as_spheres=True, color='blue') # TODO add valid colormap
-        plotter.show()
+        plotter.add_mesh(pointcloud, render_points_as_spheres=True, scalars=scalar_func, cmap=cm.get_cmap(cmap_name)) 
+        plotter.show(auto_close=False)
         return plotter
 
 
-    def render_surface(self, scalar_func):
-        mesh = pv.PolyData(self.v, self.f)
+    def render_surface(self, scalar_func, cmap_name=None):
+        mesh = pv.PolyData(self.v, self.faces)
         plotter = pv.Plotter()
-        plotter.add_mesh(mesh, color="blue", show_edges=True) # TODO add valid colormap
-        plotter.show()
+        # scalar_map = scalar_func(np.max(self.faces, axis=1))
+        plotter.add_mesh(mesh, show_edges=True, scalars=scalar_func, cmap=cm.get_cmap(cmap_name)) 
+        plotter.show(auto_close=False)
         return
 
     def face_normals(self, normalized=True):
@@ -74,7 +78,7 @@ class Mesh:
 
     def face_areas(self):
         face_normals = self.face_normals(normalized=False)
-        f_areas = [L2_norm(row) for row in face_normals]
+        f_areas = [0.5*L2_norm(row) for row in face_normals]
         self.f_areas = f_areas
         return f_areas
 
@@ -112,11 +116,14 @@ class Mesh:
             my_v = self.v[i].reshape((1,1,v.shape[0]))
             f_edges = v_coords - my_v
             sum_angles = sum([compute_angle(edges[0], edges[1]) for edges in f_edges])
-            self.gauss_curv[i] = (2*np.pi - sum_angles)/self.bc_v_areas[i]
+            self.gauss_curv[i] = (2*np.pi - sum_angles)/v_areas[i]
         
         print('achieved')
             
-
+    def show_normals(self):
+        face_normals = self.face_normals()
+        face_bc = self.face_barycenters()
+        
         
 
 def normalize_rows(arr):

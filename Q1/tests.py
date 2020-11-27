@@ -1,30 +1,16 @@
 from read_off import read_off 
 from write_off import write_off 
 import matplotlib.pyplot as plt
-from main import Mesh
+from mesh import Mesh
 import numpy as np
 
-(v, f) = read_off('off_files/example_off_files/sphere_s0.off')
-write_off('output.off', v, f)
+from test_mesh import test_mesh
 
-sphere_mesh = Mesh('off_files/example_off_files/sphere_s0.off')
-vf_adj = sphere_mesh.vertex_face_adjacency()
-vv_adj = sphere_mesh.vertex_vertex_adjacency()
-v_deg = sphere_mesh.vertex_degree()
-plotter = sphere_mesh.render_wireframe()
-# boring_cmap = plt.cm.get_cmap("viridis", 162)
+off_files = ['sphere_s0.off', 'cat.off', 'torus_fat_r2.off']
+# off_files = ['cat.off']
+for off_file in off_files:
 
-# plotter = sphere_mesh.render_pointcloud(boring_cmap)
-# sphere_mesh.render_surface(boring_cmap)
-# fn = sphere_mesh.face_normals(normalized=True)
-# f_bc = sphere_mesh.face_barycenters()
-# fa = sphere_mesh.face_areas()
-# bc_areas = sphere_mesh.barycentric_vertex_areas()
-# v_n = sphere_mesh.vertex_normals()
-sphere_mesh.gaussian_curvature()
-
-
-print('end')
-
-
-
+    # (v, f) = read_off('off_files/example_off_files/' + off_file)
+    # write_off('output.off', v, f)
+    mesh = Mesh('off_files/example_off_files/' + off_file)
+    test_mesh(mesh)
