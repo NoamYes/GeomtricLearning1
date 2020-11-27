@@ -9,7 +9,7 @@ class Mesh:
 
     def __init__(self, off_path):
         self.v, self.f = read_off(off_path)
-        self.f_v_map = np.array([[self.v[v_idx] for v_idx in face] for face in self.f[:,1:]])
+        self.f_v_map = np.array([[self.v[v_idx] for v_idx in face] for face in self.f])
 
     
     def vertex_face_adjacency(self):
@@ -106,9 +106,16 @@ class Mesh:
         for i in range (self.v.shape[0]):
             f_inds = sparse.find(vf_a[i,:])[1]
             v_inds = self.f[f_inds,  1:]
+            v = self.v[i]
             v_coords = self.v[v_inds[v_inds != i+1].reshape((-1,2)),:]
-            my_v = np.expand_dims(self.v[i+1], axis=2)
-            print('achieved')
+            my_v = self.v[i].reshape((1,1,v.shape[0]))
+            f_edges = v_coords - my_v
+            sum_angles = sum([compute_angle(edges[0], edges[1]) for edges in f_edges])
+            self.gauss_curv[i] = (2*np.pi - sum_angles)/self.bc_v_areas[i]
+            print('yalla')
+        
+        print('achieved')
+            
 
         
 

@@ -13,6 +13,6 @@ def read_off(path):
         vertices = [[float(elem) for elem in (line.split())] for line in str_lines[2:n_vertices+2]]
         faces = [[int(elem) for elem in (line.split())] for line in str_lines[n_vertices+2:n_vertices+n_faces+2]]
         v = np.array(vertices)
-        f = np.array(faces)
+        f = np.array(faces[:][1:])
 
     return v, f
