@@ -2,3 +2,4 @@ numpy
 scipy
 pyvista
 matplotlib
+array2gif

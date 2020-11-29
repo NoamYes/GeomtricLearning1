@@ -11,7 +11,7 @@ def test_mesh(mesh):
 
     # scalar_map = mesh.vertex_degree()
     # plotter = mesh.render_pointcloud(scalar_map)
-    # scalar_map = np.random.rand(mesh.faces.shape[0])
+    scalar_map = np.random.rand(mesh.faces.shape[0])
     # mesh.render_surface(scalar_map)
     # fn = mesh.face_normals(normalized=True)
     # f_bc = mesh.face_barycenters()
@@ -19,6 +19,8 @@ def test_mesh(mesh):
     # bc_areas = mesh.barycentric_vertex_areas()
     # v_n = mesh.vertex_normals()
     mesh.gaussian_curvature()
+    mesh.show_normals(scalar_map).show()
+    # mesh.show_normals_normalized(scalar_map).show()
 
 
 
