@@ -43,14 +43,16 @@ class Mesh:
         surf = pv.PolyData(self.v, self.faces)
         plotter = pv.Plotter()
         plotter.add_mesh(surf, style='wireframe', color='blue')
-        # plotter.show(auto_close=False)
+        plotter.add_scalar_bar(n_labels=2)
         return plotter
 
-    def render_pointcloud(self, scalar_func, cmap_name=None):
+    def render_pointcloud(self, scalar_func, cmap_name=None, center=None):
         pointcloud = pv.PolyData(self.v)
         plotter = pv.Plotter()
         plotter.add_mesh(pointcloud, render_points_as_spheres=True, scalars=scalar_func, cmap=cm.get_cmap(cmap_name)) 
-        # plotter.show(auto_close=False)
+        if center is not None:
+            plotter.add_points(center, render_points_as_spheres=True, point_size=20, color='black')
+        plotter.add_scalar_bar(n_labels=2)
         return plotter
 
 
@@ -58,7 +60,7 @@ class Mesh:
         mesh = pv.PolyData(self.v, self.faces)
         plotter = pv.Plotter()
         plotter.add_mesh(mesh, show_edges=True, scalars=scalar_func, cmap=cm.get_cmap(cmap_name)) 
-        # plotter.show(auto_close=False)
+        plotter.add_scalar_bar(n_labels=2)
         return plotter
 
     def face_normals(self, normalized=True):
@@ -85,8 +87,8 @@ class Mesh:
         face_areas = self.face_areas()
         f_v_adj = self.vertex_face_adjacency()
         bc_v_areas = (1/3)*np.dot(f_v_adj.toarray(), face_areas)
-        self.bc_v_areas = bc_v_areas
-        return bc_v_areas
+        self.bc_v_areas = np.array(bc_v_areas)
+        return self.bc_v_areas
 
     def vertex_normals(self, normalized=True):
         face_areas = self.face_areas()
@@ -138,6 +140,22 @@ class Mesh:
         plotter.add_arrows(self.v, v_normals, mag=0.25)
         plotter.add_arrows(face_bc, face_normals, mag=0.25)
         return plotter       
+
+    def show_face_areas(self):
+        scalar_func = self.face_areas()
+        return self.render_surface(scalar_func)
+
+    # def show_vertex_areas(self):
+    #     normalized_normals = self.vertex_normals(normalized=True)
+    #     scalar_func = np.multiply(normalized_normals, self.barycentric_vertex_areas())
+    #     plotter = self.show_face_areas()
+    #     plotter.add_arrows(self.v, scalar_func, mag=0.25)
+    #     return plotter
+
+    def show_vertex_centroids(self):
+        centroid = np.mean(self.v, axis=0)
+        scalar_func = np.linalg.norm(self.v - np.expand_dims(centroid, axis=0), axis=1)
+        return self.render_pointcloud(scalar_func=scalar_func, center=centroid)   
 
 def normalize_rows(arr):
     return [row/L2_norm(row) for row in arr]
