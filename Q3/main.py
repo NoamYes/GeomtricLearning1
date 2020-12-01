@@ -42,7 +42,7 @@ def heat_conv(u0, k_dim, itr, dt):
         for x in range(0,h_dim):
             for y in range(0,h_dim):
                 x_norm = (x-k_dim)**2+(y-k_dim)**2
-                h[x, y] = (1/(2*math.sqrt(math.pi*((t+1)*dt))))*math.exp(-x_norm/(4*(t+1)*dt))
+                h[x, y] = (1/(math.sqrt(2*math.pi*((t+1)*dt))**2))*math.exp(-x_norm/(4*(t+1)*dt))
 
         # normalize h
 
@@ -59,7 +59,9 @@ def heat_conv(u0, k_dim, itr, dt):
 
 if __name__ == "__main__":
     
-    TEST_FILENAME = os.path.join(os.path.dirname(__file__), 'cameraman.jpg')
+    # TEST_FILENAME = os.path.join(os.path.dirname(__file__), 'cameraman.jpg')
+    TEST_FILENAME = os.path.join(os.path.dirname(__file__), 'sphinx_giz.jpeg')
+    
     im = plt.imread(TEST_FILENAME)
     im_copy = np.copy(im)
     im_gray = im_copy[:,:,0] # Take only red value
@@ -72,10 +74,10 @@ if __name__ == "__main__":
     N = 30
     dt = 0.2
 
-    # img_arr = gradient_descent(im_gray, N, dx, dy, dt)
-    # img_arr = np.repeat(img_arr[:,:,:,np.newaxis], 3, axis=3)
-    # OUT_FILENAME = os.path.join(os.path.dirname(__file__), 'descent_surf.gif')
-    # write_gif(img_arr, OUT_FILENAME, fps=5)
+    img_arr = gradient_descent(im_gray, N, dx, dy, dt)
+    img_arr = np.repeat(img_arr[:,:,:,np.newaxis], 3, axis=3)
+    OUT_FILENAME = os.path.join(os.path.dirname(__file__), 'sphinx_giz_gradient_surf.gif')
+    write_gif(img_arr, OUT_FILENAME, fps=5)
 
     k_dim = 2
     dt = 0.1
@@ -83,7 +85,7 @@ if __name__ == "__main__":
 
     img_arr = heat_conv(im_gray, k_dim, itr, dt)
     img_arr = np.repeat(img_arr[:,:,:,np.newaxis], 3, axis=3)
-    OUT_FILENAME = os.path.join(os.path.dirname(__file__), 'conv_time.gif')
+    OUT_FILENAME = os.path.join(os.path.dirname(__file__), 'sphinx_giz_conv_time.gif')
     write_gif(img_arr, OUT_FILENAME, fps=5)
 
 
